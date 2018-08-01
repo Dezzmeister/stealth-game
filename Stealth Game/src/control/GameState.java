@@ -6,11 +6,9 @@ package control;
  * @author Joe Desmond
  */
 public enum GameState {
-	INTRO,
-	MAIN_MENU,
+	INTRO, MAIN_MENU,
 	/*
 	 * Add other menus here
 	 */
-	PAUSE_MENU,
-	GAME
+	PAUSE_MENU, GAME
 }
