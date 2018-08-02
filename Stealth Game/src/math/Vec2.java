@@ -43,6 +43,10 @@ public class Vec2 {
 	public Vec2 normalize() {
 		return new Vec2(x / length, y / length);
 	}
+	
+	public Vec2 scale(float factor) {
+		return new Vec2(x * factor, y * factor);
+	}
 
 	public boolean isLeftOf(Ray ray) {
 		Vec2 v1 = ray.direction.minus(ray.origin);
