@@ -16,6 +16,11 @@ public class Ray {
 		direction = _direction;
 		updateLength();
 	}
+	
+	public Ray(float x1, float y1, float x2, float y2) {
+		origin = new Vec2(x1,y1);
+		direction = new Vec2(x2,y2);
+	}
 
 	public void updateLength() {
 		length = Vec2.distance(origin, direction);

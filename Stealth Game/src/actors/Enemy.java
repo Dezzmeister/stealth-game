@@ -29,6 +29,8 @@ public class Enemy {
 	 * Ping ray 2
 	 */
 	private Ray ping2;
+	
+	private Ray right = new Ray(0,0,1,0);
 
 	public Vec2 pos;
 
@@ -44,11 +46,14 @@ public class Enemy {
 		// The two points to check for visiblity
 		Wall visiblePoints = findTangentPoints(player);
 		
-		boolean pt1LeftOfFlashlight1 = visiblePoints.v0.isLeftOf(flashlight1);
-		boolean pt1LeftOfFlashlight2 = visiblePoints.v0.isLeftOf(flashlight2);
+		Ray f1 = flashlight1.plus(pos);
+		Ray f2 = flashlight2.plus(pos);
 		
-		boolean pt2LeftOfFlashlight1 = visiblePoints.v1.isLeftOf(flashlight1);
-		boolean pt2LeftOfFlashlight2 = visiblePoints.v1.isLeftOf(flashlight2);
+		boolean pt1LeftOfFlashlight1 = visiblePoints.v0.isLeftOf(f1);
+		boolean pt1LeftOfFlashlight2 = visiblePoints.v0.isLeftOf(f2);
+		
+		boolean pt2LeftOfFlashlight1 = visiblePoints.v1.isLeftOf(f1);
+		boolean pt2LeftOfFlashlight2 = visiblePoints.v1.isLeftOf(f2);
 		
 		Vec2 visiblePoint;
 		
@@ -75,11 +80,14 @@ public class Enemy {
 	public boolean canSeeInPingRange(Player player) {
 		Wall visiblePoints = findTangentPoints(player);
 		
-		boolean pt1LeftOfPing1 = visiblePoints.v0.isLeftOf(ping1);
-		boolean pt1LeftOfPing2 = visiblePoints.v0.isLeftOf(ping2);
+		Ray p1 = ping1.plus(pos);
+		Ray p2 = ping2.plus(pos);
 		
-		boolean pt2LeftOfPing1 = visiblePoints.v1.isLeftOf(ping1);
-		boolean pt2LeftOfPing2 = visiblePoints.v1.isLeftOf(ping2);
+		boolean pt1LeftOfPing1 = visiblePoints.v0.isLeftOf(p1);
+		boolean pt1LeftOfPing2 = visiblePoints.v0.isLeftOf(p2);
+		
+		boolean pt2LeftOfPing1 = visiblePoints.v1.isLeftOf(p1);
+		boolean pt2LeftOfPing2 = visiblePoints.v1.isLeftOf(p2);
 		
 		return (pt1LeftOfPing1 != pt1LeftOfPing2) || (pt2LeftOfPing1 != pt2LeftOfPing2);
 		
