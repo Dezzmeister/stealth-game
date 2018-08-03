@@ -11,6 +11,10 @@ import math.Wall;
  * @author Joe Desmond
  */
 public class Enemy {
+	/**
+	 * The number of rays to cast through the tangent wall when checking if this enemy can see the player
+	 */
+	private static final int TANGENT_WALL_RAY_COUNT = 10;
 	
 	// Rays are defined relative to the origin.
 	/**
@@ -48,6 +52,12 @@ public class Enemy {
 		
 		Ray f1 = flashlight1.plus(pos);
 		Ray f2 = flashlight2.plus(pos);
+		Ray rightRay = right.plus(pos);
+		
+		if (!visiblePoints.v0.isLeftOf(rightRay) && !visiblePoints.v1.isLeftOf(rightRay)) {
+			//The player is behind this enemy
+			return false;
+		}
 		
 		boolean pt1LeftOfFlashlight1 = visiblePoints.v0.isLeftOf(f1);
 		boolean pt1LeftOfFlashlight2 = visiblePoints.v0.isLeftOf(f2);
