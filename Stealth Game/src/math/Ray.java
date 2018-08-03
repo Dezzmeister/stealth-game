@@ -9,6 +9,11 @@ public class Ray {
 	
 	public Vec2 origin;
 	public Vec2 direction;
+	
+	/**
+	 * This length is the distance from <code>origin</code> to <code>direction</code>. Geometrically, rays have infinite length
+	 * in one direction.
+	 */
 	public float length;
 
 	public Ray(Vec2 _origin, Vec2 _direction) {

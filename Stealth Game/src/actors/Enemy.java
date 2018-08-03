@@ -34,19 +34,23 @@ public class Enemy {
 	 */
 	private Ray ping2;
 	
+	/**
+	 * A ray pointing to the enemy's right. Used in visibility testing.
+	 */
 	private Ray right = new Ray(0,0,1,0);
 
 	public Vec2 pos;
 
 	// TODO: Write a constructor and calculate rays from FoVs
+	// TODO: Fix canSeeInFlashlight; make it more functional and disconnect it from flashlight instance data
 	
 	/**
 	 * Returns true if this enemy can see the player in the flashlight range.
 	 * 
-	 * @param player
-	 * @return
+	 * @param player Player being tested
+	 * @return true if the player can be seen
 	 */
-	public boolean canSeeInFlashLight(Player player) {
+	public boolean canSeeInFlashlight(Player player) {
 		// The two points to check for visiblity
 		Wall visiblePoints = findTangentPoints(player);
 		
@@ -54,8 +58,8 @@ public class Enemy {
 		Ray f2 = flashlight2.plus(pos);
 		Ray rightRay = right.plus(pos);
 		
+		// Ensure first that the player is not behind this enemy
 		if (!visiblePoints.v0.isLeftOf(rightRay) && !visiblePoints.v1.isLeftOf(rightRay)) {
-			//The player is behind this enemy
 			return false;
 		}
 		
@@ -65,19 +69,49 @@ public class Enemy {
 		boolean pt2LeftOfFlashlight1 = visiblePoints.v1.isLeftOf(f1);
 		boolean pt2LeftOfFlashlight2 = visiblePoints.v1.isLeftOf(f2);
 		
-		Vec2 visiblePoint;
-		
-		if (pt1LeftOfFlashlight1 != pt1LeftOfFlashlight2) {
-			visiblePoint = visiblePoints.v0;
-		} else if (pt2LeftOfFlashlight1 != pt2LeftOfFlashlight2) {
-			visiblePoint = visiblePoints.v1;
-		} else {
+		if ((pt1LeftOfFlashlight1 == pt1LeftOfFlashlight2) && (pt2LeftOfFlashlight1 == pt2LeftOfFlashlight2)) {
 			return false;
 		}
 		
-		return true;
+		return visibilityTest(player,visiblePoints);
+	}
+	
+	/**
+	 * Tests the player against all rooms he occupies and all walls in each room. Casts rays from this enemy's center
+	 * through <code>castline</code> at intervals of 1/<code>TANGENT_WALL_RAY_COUNT</code>. If a ray ever finishes without intersecting anything closer than the 
+	 * castline, this method returns true. If all rays finish and intersect something closer than the castline, this method returns false.
+	 * 
+	 * @param player Player to be tested
+	 * @param castline Line to cast rays through
+	 * @return true if the player is visible 
+	 */
+	private boolean visibilityTest(Player player, Wall castline) {
 		
-		// TODO: Add wall intersection tests
+		steploop:
+		for (int i = 0; i < TANGENT_WALL_RAY_COUNT; i++) {
+			
+			float rayDirNorm = i/(float)TANGENT_WALL_RAY_COUNT;
+			Vec2 rayDir = castline.getPointAt(rayDirNorm);
+			Ray ray = new Ray(this.pos,rayDir);
+			
+			float castlineDistance = ray.length;
+			
+			for (Room room : player.rooms) {
+				for (Wall wall : room.walls) {
+					Vec2 intersection = ray.hitWall(wall);
+					
+					if (intersection != null) {
+						float distance = Vec2.distance(this.pos, intersection);
+					
+						if (distance < castlineDistance) {
+							continue steploop;
+						}
+					}
+				}
+			}
+			return true;
+		}
+		return false;
 	}
 	
 	/**

@@ -20,4 +20,33 @@ public class Wall {
 		v0 = endpoint1;
 		v1 = endpoint2;
 	}
+	
+	/**
+	 * Gets a point on this Wall for a specified normalized distance on the Wall. v0 is 0, and v1 is 1.
+	 * 
+	 * @param norm normalized distance on the Wall
+	 * @return point on the Wall that is norm*length distance from v0
+	 */
+	public Vec2 getPointAt(float norm) {
+		float xResult;
+		float yResult;
+		
+		float xDiff = v1.x - v0.x;
+		
+		if (xDiff == 0) {
+			xResult = v0.x;
+		} else {
+			xResult = (norm/xDiff) + v0.x;
+		}
+		
+		float yDiff = v1.y - v0.y;
+		
+		if (yDiff == 0) {
+			yResult = v0.y;
+		} else {
+			yResult = (norm/yDiff) + v0.y;
+		}
+		
+		return new Vec2(xResult,yResult);
+	}
 }
